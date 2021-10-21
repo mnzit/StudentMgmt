@@ -5,7 +5,8 @@
 Tested using payara micro
 
 1. Download payara micro
-2. Run it
+2. Setup the db using student.sql
+3. Run it
 command to deploy the project
 ```
 java -jar ~/payara-micro-5.2021.8.jar --deploy target/*.war --nocluster
