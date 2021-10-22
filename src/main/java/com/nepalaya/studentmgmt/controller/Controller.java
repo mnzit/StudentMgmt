@@ -15,7 +15,5 @@ public class Controller extends HttpServlet {
         response.setContentType("application/json");
         response.setStatus(200);
         writer.write(JacksonUtil.toJson(responseBody));
-        response.setContentType("application/json");
-        response.setStatus(200);
     }
 }
