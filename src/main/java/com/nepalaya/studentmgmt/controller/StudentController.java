@@ -27,13 +27,13 @@ public class StudentController extends Controller {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String[] split = request.getRequestURL().toString().split("/");
+        Response responseBody = null;
         if (split[split.length - 1].matches("[1-9]\\d*")) {
-            Response responseBody = studentService.getById(Long.parseLong(split[split.length - 1]));
-            buildResponse(response, responseBody);
+            responseBody = studentService.getById(Long.parseLong(split[split.length - 1]));
         } else {
-            Response responseBody = studentService.getAll();
-            buildResponse(response, responseBody);
+            responseBody = studentService.getAll();
         }
+        buildResponse(response, responseBody);
     }
 
     @Override
