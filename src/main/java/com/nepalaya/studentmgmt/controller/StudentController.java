@@ -1,15 +1,18 @@
 package com.nepalaya.studentmgmt.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nepalaya.studentmgmt.builder.ResponseBuilder;
 import com.nepalaya.studentmgmt.model.Student;
 import com.nepalaya.studentmgmt.response.Response;
 import com.nepalaya.studentmgmt.service.StudentService;
 import com.nepalaya.studentmgmt.service.impl.StudentServiceImpl;
+import com.nepalaya.studentmgmt.validators.ModelConstraintValidator;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class StudentController extends Controller {
 
@@ -20,7 +23,13 @@ public class StudentController extends Controller {
         ServletInputStream inputStream = request.getInputStream();
         ObjectMapper objectMapper = new ObjectMapper();
         Student student = objectMapper.readValue(inputStream, Student.class);
-        Response responseBody = studentService.add(student);
+        List<String> failures = ModelConstraintValidator.performValidation(student);
+        Response responseBody = null;
+        if (failures.isEmpty()) {
+            responseBody = studentService.add(student);
+        } else {
+            responseBody = ResponseBuilder.failure("Adding Student Failed", failures);
+        }
         buildResponse(response, responseBody);
     }
 

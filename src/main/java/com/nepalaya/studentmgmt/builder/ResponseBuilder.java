@@ -28,4 +28,13 @@ public class ResponseBuilder {
                 .message(message)
                 .build();
     }
+
+    public static Response failure(String message, Object data) {
+        return Response
+                .builder()
+                .success(false)
+                .data(data)
+                .message(message)
+                .build();
+    }
 }

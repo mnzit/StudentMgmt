@@ -3,6 +3,7 @@ package com.nepalaya.studentmgmt.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,10 +16,17 @@ import java.util.Date;
 public class Student implements Serializable {
 
     private Long id;
+    @NotBlank
+    @Size(min = 2, max=150)
     private String name;
+    @NotNull
+    @Past
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date dob;
+    @NotBlank
+    @Size(min = 2, max=200)
     private String address;
+    @NotBlank
     private String contactNo;
     private Date createdDate;
     private Boolean status;
