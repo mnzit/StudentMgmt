@@ -1,8 +1,6 @@
 package com.nepalaya.studentmgmt.db;
 
-import javax.sql.PooledConnection;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -12,8 +10,8 @@ public class DatabaseHelper {
     private PreparedStatement preparedStatement;
 
     public void connect() throws Exception {
-        Class.forName(DatabaseConfig.DRIVER_NAME);
-        connection = DriverManager.getConnection(DatabaseConfig.URL, DatabaseConfig.USERNAME, DatabaseConfig.PASSWORD);
+        connection = PooledConnection.getInstance().getConnection();
+        System.out.println("Connection: " + connection);
     }
 
     public PreparedStatement initialize(String sql) throws Exception {

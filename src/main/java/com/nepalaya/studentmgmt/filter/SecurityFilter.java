@@ -17,34 +17,37 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         LOGGER.info("The Filter is Triggered");
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String basicAuth = httpServletRequest.getHeader("Authorization");
-        if(basicAuth == null){
-            final PrintWriter writer = httpServletResponse.getWriter();
-            httpServletResponse.setContentType("application/json");
-            httpServletResponse.setStatus(401);
-            writer.write(JacksonUtil.toJson(ResponseBuilder.failure("Authorization header not found")));
-        }
-        LOGGER.info(basicAuth);
-        basicAuth = basicAuth.replace("Basic ","");
-        LOGGER.info(basicAuth);
-        byte[] decode = Base64.getDecoder().decode(basicAuth);
-        LOGGER.info("bytes"+ decode);
-        basicAuth = new String(decode);
-        LOGGER.info(basicAuth);
-        String[] usernamePassword = basicAuth.split(":");
-        LOGGER.info(usernamePassword[0]+":"+usernamePassword[1]);
-        if (usernamePassword[0].equals("mnzit") && usernamePassword[1].equals("mnzit")) {
-            chain.doFilter(request, response);
-        } else {
-            final PrintWriter writer = httpServletResponse.getWriter();
-            httpServletResponse.setContentType("application/json");
-            httpServletResponse.setStatus(401);
-            writer.write(JacksonUtil.toJson(ResponseBuilder.failure("Username/Password is incorrect")));
-        }
 
-        // Users
-       //  id, firstname, lastname, email, password, status, createdDate, updatedDate
+        if(!"/StudentMgmt/".equals(httpServletRequest.getRequestURI())){
+            if(basicAuth == null){
+                final PrintWriter writer = httpServletResponse.getWriter();
+                httpServletResponse.setContentType("application/json");
+                httpServletResponse.setStatus(401);
+                writer.write(JacksonUtil.toJson(ResponseBuilder.failure("Authorization header not found")));
+            }
+            LOGGER.info(basicAuth);
+            basicAuth = basicAuth.replace("Basic ","");
+            LOGGER.info(basicAuth);
+            byte[] decode = Base64.getDecoder().decode(basicAuth);
+            LOGGER.info("bytes"+ decode);
+            basicAuth = new String(decode);
+            LOGGER.info(basicAuth);
+            String[] usernamePassword = basicAuth.split(":");
+            LOGGER.info(usernamePassword[0]+":"+usernamePassword[1]);
+            if (usernamePassword[0].equals("mnzit") && usernamePassword[1].equals("mnzit")) {
+                chain.doFilter(request, response);
+            } else {
+                final PrintWriter writer = httpServletResponse.getWriter();
+                httpServletResponse.setContentType("application/json");
+                httpServletResponse.setStatus(401);
+                writer.write(JacksonUtil.toJson(ResponseBuilder.failure("Username/Password is incorrect")));
+            }
+        }else{
+            chain.doFilter(request, response);
+        }
     }
 }
