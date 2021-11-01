@@ -1,8 +1,6 @@
 package com.nepalaya.studentmgmt.dao.impl;
 
 import com.nepalaya.studentmgmt.dao.StudentDAO;
-import com.nepalaya.studentmgmt.db.QueryConstant;
-import com.nepalaya.studentmgmt.mapper.StudentMapper;
 import com.nepalaya.studentmgmt.model.Student;
 
 import javax.persistence.*;
@@ -29,16 +27,41 @@ public class StudentDAOHibernateImpl implements StudentDAO {
     @Override
     public boolean update(Student student) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(student);
-        transaction.commit();
-        return true;
+        EntityTransaction transaction = null;
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.merge(student);
+            return true;
+        } catch (Exception ex) {
+            transaction.rollback();
+            throw new RuntimeException("Updating Student Failed");
+        }finally {
+            entityManager.close();
+        }
     }
 
     @Override
     public boolean delete(Long id) throws Exception {
-        return false;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = null;
+        try {
+            Student student = entityManager.find(Student.class, id);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            if (student == null) {
+                throw new RuntimeException("Deleting Student Failed");
+            } else {
+                student.setStatus(false);
+                transaction.commit();
+                return true;
+            }
+        } catch (Exception ex) {
+            transaction.rollback();
+            throw new RuntimeException("Deleting Student Failed");
+        }finally {
+            entityManager.close();
+        }
     }
 
     @Override

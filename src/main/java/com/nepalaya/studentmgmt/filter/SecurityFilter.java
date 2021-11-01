@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.logging.Logger;
 
 public class SecurityFilter implements Filter {
+
     private final static Logger LOGGER = Logger.getLogger(SecurityFilter.class.getName());
 
     @Override
@@ -22,32 +23,37 @@ public class SecurityFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String basicAuth = httpServletRequest.getHeader("Authorization");
 
-        if(!"/StudentMgmt/".equals(httpServletRequest.getRequestURI())){
-            if(basicAuth == null){
-                final PrintWriter writer = httpServletResponse.getWriter();
-                httpServletResponse.setContentType("application/json");
-                httpServletResponse.setStatus(401);
-                writer.write(JacksonUtil.toJson(ResponseBuilder.failure("Authorization header not found")));
+        if (!"/StudentMgmt/".equals(httpServletRequest.getRequestURI())) {
+            if (basicAuth == null) {
+                handleError(httpServletResponse, "Authorization Header is not found");
             }
-            LOGGER.info(basicAuth);
-            basicAuth = basicAuth.replace("Basic ","");
-            LOGGER.info(basicAuth);
-            byte[] decode = Base64.getDecoder().decode(basicAuth);
-            LOGGER.info("bytes"+ decode);
-            basicAuth = new String(decode);
-            LOGGER.info(basicAuth);
-            String[] usernamePassword = basicAuth.split(":");
-            LOGGER.info(usernamePassword[0]+":"+usernamePassword[1]);
-            if (usernamePassword[0].equals("mnzit") && usernamePassword[1].equals("mnzit")) {
-                chain.doFilter(request, response);
-            } else {
-                final PrintWriter writer = httpServletResponse.getWriter();
-                httpServletResponse.setContentType("application/json");
-                httpServletResponse.setStatus(401);
-                writer.write(JacksonUtil.toJson(ResponseBuilder.failure("Username/Password is incorrect")));
+            if (!basicAuth.contains("Basic ")) {
+                handleError(httpServletResponse, "Authorization Header is not in correct format");
             }
-        }else{
+            basicAuth = basicAuth.replace("Basic ", "");
+            try {
+                byte[] decode = Base64.getDecoder().decode(basicAuth);
+                basicAuth = new String(decode);
+                String[] usernamePassword = basicAuth.split(":");
+                // TODO: Must be checked from the database
+                if ("mnzit".equals(usernamePassword[0]) && "mnzit".equals(usernamePassword[1])) {
+                    chain.doFilter(request, response);
+                } else {
+                    handleError(httpServletResponse, "Username/Password is incorrect");
+                }
+            } catch (Exception ex) {
+                handleError(httpServletResponse, "Login Failed");
+            }
+        } else {
             chain.doFilter(request, response);
         }
+    }
+
+    public void handleError(HttpServletResponse httpServletResponse, String error) throws IOException {
+        final PrintWriter writer = httpServletResponse.getWriter();
+        httpServletResponse.setContentType("application/json");
+        writer.write(JacksonUtil.toJson(ResponseBuilder.failure(error)));
+        writer.flush();
+        httpServletResponse.sendError(401);
     }
 }
