@@ -31,18 +31,14 @@ public class SecurityFilter implements Filter {
                 handleError(httpServletResponse, "Authorization Header is not in correct format");
             }
             basicAuth = basicAuth.replace("Basic ", "");
-            try {
-                byte[] decode = Base64.getDecoder().decode(basicAuth);
-                basicAuth = new String(decode);
-                String[] usernamePassword = basicAuth.split(":");
-                // TODO: Must be checked from the database
-                if ("mnzit".equals(usernamePassword[0]) && "mnzit".equals(usernamePassword[1])) {
-                    chain.doFilter(request, response);
-                } else {
-                    handleError(httpServletResponse, "Username/Password is incorrect");
-                }
-            } catch (Exception ex) {
-                handleError(httpServletResponse, "Login Failed");
+            byte[] decode = Base64.getDecoder().decode(basicAuth);
+            basicAuth = new String(decode);
+            String[] usernamePassword = basicAuth.split(":");
+            // TODO: Must be checked from the database
+            if ("mnzit".equals(usernamePassword[0]) && "mnzit".equals(usernamePassword[1])) {
+                chain.doFilter(request, response);
+            } else {
+                handleError(httpServletResponse, "Username/Password is incorrect");
             }
         } else {
             chain.doFilter(request, response);
