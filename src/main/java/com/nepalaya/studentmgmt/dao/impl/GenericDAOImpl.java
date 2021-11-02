@@ -28,12 +28,12 @@ public abstract class GenericDAOImpl<T, ID> implements GenericDAO<T, ID> {
     public List<T> getAll() throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(persistenceClass);
-            Root<T> rootEntry = cq.from(persistenceClass);
-            CriteriaQuery<T> all = cq.select(rootEntry);
-            TypedQuery<T> allQuery = entityManager.createQuery(all);
-            List<T> objects = allQuery.getResultList();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(persistenceClass);
+            Root<T> root = criteriaQuery.from(persistenceClass);
+            criteriaQuery = criteriaQuery.select(root);
+            TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+            List<T> objects = typedQuery.getResultList();
 
             if (objects == null || objects.isEmpty()) {
                 throw new Exception(String.format("%s's not found", persistenceClass.getSimpleName()));
@@ -51,13 +51,13 @@ public abstract class GenericDAOImpl<T, ID> implements GenericDAO<T, ID> {
     public List<T> getAll(Conditional<T> conditional) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(persistenceClass);
-            Root<T> rootEntry = cq.from(persistenceClass);
-            CriteriaQuery<T> all = cq.select(rootEntry);
-            conditional.add(cb, cq, rootEntry);
-            TypedQuery<T> allQuery = entityManager.createQuery(all);
-            List<T> objects = allQuery.getResultList();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(persistenceClass);
+            Root<T> root = criteriaQuery.from(persistenceClass);
+            criteriaQuery = criteriaQuery.select(root);
+            conditional.add(criteriaBuilder, criteriaQuery, root);
+            TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+            List<T> objects = typedQuery.getResultList();
 
             if (objects == null || objects.isEmpty()) {
                 throw new Exception(String.format("%s's not found", persistenceClass.getSimpleName()));
@@ -92,15 +92,15 @@ public abstract class GenericDAOImpl<T, ID> implements GenericDAO<T, ID> {
     public T getOneById(Conditional<T> conditional) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(persistenceClass);
-            Root<T> rootEntry = cq.from(persistenceClass);
-            CriteriaQuery<T> all = cq.select(rootEntry);
-            conditional.add(cb, cq, rootEntry);
-            TypedQuery<T> allQuery = entityManager.createQuery(all);
-            T object = allQuery.getSingleResult();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(persistenceClass);
+            Root<T> root = criteriaQuery.from(persistenceClass);
+            criteriaQuery = criteriaQuery.select(root);
+            conditional.add(criteriaBuilder, criteriaQuery, root);
+            TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+            T object = typedQuery.getSingleResult();
 
-            if (object == null ) {
+            if (object == null) {
                 throw new Exception(String.format("%s not found", persistenceClass.getSimpleName()));
             }
 

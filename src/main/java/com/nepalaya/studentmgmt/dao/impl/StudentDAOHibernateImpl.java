@@ -71,13 +71,13 @@ public class StudentDAOHibernateImpl implements StudentDAO {
     public List<Student> getAll() throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Student> cq = cb.createQuery(Student.class);
-            Root<Student> rootEntry = cq.from(Student.class);
-            CriteriaQuery<Student> all = cq.select(rootEntry);
-            all.where(cb.equal(rootEntry.get("status"), true));
-            TypedQuery<Student> allQuery = entityManager.createQuery(all);
-            List<Student> students = allQuery.getResultList();
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
+            Root<Student> rootEntry = criteriaQuery.from(Student.class);
+            criteriaQuery = criteriaQuery.select(rootEntry);
+            criteriaQuery.where(criteriaBuilder.equal(rootEntry.get("status"), true));
+            TypedQuery<Student> typedQuery = entityManager.createQuery(criteriaQuery);
+            List<Student> students = typedQuery.getResultList();
             if (students == null || students.isEmpty()) {
                 throw new Exception("Students not found");
             }
