@@ -10,13 +10,13 @@ import com.nepalaya.studentmgmt.util.DateUtil;
 import java.util.List;
 import java.util.Optional;
 
-public class StudentDAODatabaseImpl implements StudentDAO {
+public class StudentDAOJdbcTemplateImpl implements StudentDAO {
 
     private final JdbcTemplate<Student> jdbcTemplate = new JdbcTemplate<>();
 
     // CREATE
     @Override
-    public boolean add(Student student) throws Exception {
+    public void save(Student student) throws Exception {
         int rowAffected = jdbcTemplate.update(
                 QueryConstant.Student.CREATE,
                 new Object[]{
@@ -27,7 +27,6 @@ public class StudentDAODatabaseImpl implements StudentDAO {
                 });
 
         if (rowAffected > 0) {
-            return true;
         } else {
             throw new RuntimeException("Adding Student Failed");
         }
@@ -35,7 +34,7 @@ public class StudentDAODatabaseImpl implements StudentDAO {
 
     // UPDATE
     @Override
-    public boolean update(Student student) throws Exception {
+    public void update(Student student) throws Exception {
         int rowAffected = jdbcTemplate.update(
                 QueryConstant.Student.UPDATE,
                 new Object[]{
@@ -46,7 +45,6 @@ public class StudentDAODatabaseImpl implements StudentDAO {
                         student.getId()
                 });
         if (rowAffected > 0) {
-            return true;
         } else {
             throw new RuntimeException("Updating Student Failed");
         }
@@ -54,10 +52,10 @@ public class StudentDAODatabaseImpl implements StudentDAO {
 
     // DELETE
     @Override
-    public boolean delete(Long id) throws Exception {
+    public void delete(Long id) throws Exception {
         int rowAffected = jdbcTemplate.update(QueryConstant.Student.DELETE, new Object[]{id});
         if (rowAffected > 0) {
-            return true;
+
         } else {
             throw new RuntimeException("Deleting Student Failed");
         }
@@ -76,7 +74,7 @@ public class StudentDAODatabaseImpl implements StudentDAO {
 
     // READ
     @Override
-    public Student getById(Long id) throws Exception {
+    public Student getOneById(Long id) throws Exception {
         Optional<Student> optionalStudent = jdbcTemplate
                 .getOneByObject(
                         QueryConstant.Student.GET_BY_ID,

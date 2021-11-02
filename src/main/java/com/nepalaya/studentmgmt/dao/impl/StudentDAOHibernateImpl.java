@@ -8,41 +8,45 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Optional;
 
 public class StudentDAOHibernateImpl implements StudentDAO {
 
     private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("jdbcDemo");
 
     @Override
-    public boolean add(Student student) throws Exception {
+    public void save(Student student) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(student);
-        transaction.commit();
-        return true;
+        try {
+            transaction.begin();
+            entityManager.persist(student);
+            transaction.commit();
+        } catch (Exception ex) {
+            transaction.rollback();
+            throw new Exception("Saving Student Failed !");
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override
-    public boolean update(Student student) throws Exception {
+    public void update(Student student) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.merge(student);
-            return true;
         } catch (Exception ex) {
             transaction.rollback();
-            throw new RuntimeException("Updating Student Failed");
-        }finally {
+            throw new Exception("Updating Student Failed");
+        } finally {
             entityManager.close();
         }
     }
 
     @Override
-    public boolean delete(Long id) throws Exception {
+    public void delete(Long id) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
@@ -54,12 +58,11 @@ public class StudentDAOHibernateImpl implements StudentDAO {
             } else {
                 student.setStatus(false);
                 transaction.commit();
-                return true;
             }
         } catch (Exception ex) {
             transaction.rollback();
-            throw new RuntimeException("Deleting Student Failed");
-        }finally {
+            throw new Exception("Deleting Student Failed");
+        } finally {
             entityManager.close();
         }
     }
@@ -67,34 +70,38 @@ public class StudentDAOHibernateImpl implements StudentDAO {
     @Override
     public List<Student> getAll() throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
-        Root<Student> rootEntry = cq.from(Student.class);
-        CriteriaQuery<Student> all = cq.select(rootEntry);
-        TypedQuery<Student> allQuery = entityManager.createQuery(all);
-        List<Student> students = allQuery.getResultList();
-
-        if (students == null || students.isEmpty()) {
-            throw new RuntimeException("Students not found");
+        try {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+            Root<Student> rootEntry = cq.from(Student.class);
+            CriteriaQuery<Student> all = cq.select(rootEntry);
+            all.where(cb.equal(rootEntry.get("status"), true));
+            TypedQuery<Student> allQuery = entityManager.createQuery(all);
+            List<Student> students = allQuery.getResultList();
+            if (students == null || students.isEmpty()) {
+                throw new Exception("Students not found");
+            }
+            return students;
+        } catch (Exception ex) {
+            throw new Exception("Getting Students Failed !");
+        } finally {
+            entityManager.close();
         }
-        entityManager.close();
-        return students;
     }
 
     @Override
-    public Student getById(Long id) throws Exception {
+    public Student getOneById(Long id) throws Exception {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Student student = null;
-
-        Optional<Student> optionalStudent = Optional.of(entityManager.find(Student.class, id));
-        if (optionalStudent.isPresent()) {
-            student = optionalStudent.get();
-
-        } else {
-            throw new RuntimeException("Student with id=[" + id + "] is not found in our system");
+        try {
+            Student student = entityManager.find(Student.class, id);
+            if (student == null) {
+                throw new Exception("Student with id=[" + id + "] is not found in our system");
+            }
+            return student;
+        } catch (Exception ex) {
+            throw new Exception("Getting Students Failed !");
+        } finally {
+            entityManager.close();
         }
-        entityManager.close();
-        return student;
-
     }
 }
