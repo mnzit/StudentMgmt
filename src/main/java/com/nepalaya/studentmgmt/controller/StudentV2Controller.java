@@ -2,7 +2,6 @@ package com.nepalaya.studentmgmt.controller;
 
 import com.nepalaya.studentmgmt.model.Student;
 import com.nepalaya.studentmgmt.service.StudentService;
-import com.nepalaya.studentmgmt.service.impl.StudentServiceImpl;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -44,7 +43,4 @@ public class StudentV2Controller {
                 .entity(studentService.getById(id))
                 .build();
     }
-
-    //PUT
-    //DELETE
 }

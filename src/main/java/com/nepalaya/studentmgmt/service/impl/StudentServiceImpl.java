@@ -7,10 +7,9 @@ import com.nepalaya.studentmgmt.exception.ResponseProcessor;
 import com.nepalaya.studentmgmt.model.Student;
 import com.nepalaya.studentmgmt.response.Response;
 import com.nepalaya.studentmgmt.service.StudentService;
+import org.springframework.stereotype.Component;
 
-import javax.enterprise.context.ApplicationScoped;
-
-@ApplicationScoped
+@Component
 public class StudentServiceImpl implements StudentService {
 
     private final StudentDAO studentDAO = new StudentDAOImpl();

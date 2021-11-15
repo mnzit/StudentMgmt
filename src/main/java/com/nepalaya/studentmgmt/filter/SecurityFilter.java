@@ -23,7 +23,7 @@ public class SecurityFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String basicAuth = httpServletRequest.getHeader("Authorization");
 
-        if (!"/StudentMgmt/".equals(httpServletRequest.getRequestURI())) {
+        if (!"/StudentMgmt/v2".equals(httpServletRequest.getRequestURI()) || !"/StudentMgmt/".equals(httpServletRequest.getRequestURI())) {
             if (basicAuth == null) {
                 handleError(httpServletResponse, "Authorization Header is not found");
             }
