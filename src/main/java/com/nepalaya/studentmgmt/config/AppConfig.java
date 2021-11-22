@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.nepalaya.studentmgmt")
-@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "/WEB-INF/application.properties")
 public class AppConfig {
 
     @Value("${spring.ui.jsp.prefix}")
@@ -55,6 +55,5 @@ public class AppConfig {
     public JdbcTemplate jdbcTemplate(DataSource dataSource){
        return new JdbcTemplate(dataSource);
     }
-
 
 }
