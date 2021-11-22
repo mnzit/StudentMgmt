@@ -1,11 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: manjitshakya
-  Date: 15/11/2021
-  Time: 7:46 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -18,13 +11,12 @@
     }
 </style>
 <body>
-
 <h1>Students</h1>
-
-<c:if test="${requestScope.errorMsg != null}">
-    <h2>${requestScope.errorMsg}</h2>
-</c:if>
-<c:if test="${requestScope.errorMsg == null}">
+<button>
+    <a href="students/create">Create Student</a>
+</button>
+<h2>${requestScope.message}</h2>
+<c:if test="${requestScope.status == true}">
     <table>
         <thead>
         <tr>

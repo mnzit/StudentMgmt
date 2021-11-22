@@ -5,7 +5,7 @@ import com.nepalaya.studentmgmt.model.Student;
 
 import java.sql.ResultSet;
 
-public class StudentMapper implements RowMapper<Student> {
+public class StudentCustomMapper implements RowMapper<Student> {
     // Object Relational Mapping
     @Override
     public Student map(ResultSet resultSet) throws Exception {

@@ -2,9 +2,13 @@ package com.nepalaya.studentmgmt.dao.impl;
 
 import com.nepalaya.studentmgmt.dao.StudentDAO;
 import com.nepalaya.studentmgmt.model.Student;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
+@Qualifier("hibernateGenericImplementation")
 public class StudentDAOImpl extends GenericDAOImpl<Student, Long> implements StudentDAO {
 
     @Override

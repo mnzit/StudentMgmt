@@ -2,20 +2,20 @@ package com.nepalaya.studentmgmt.service.impl;
 
 import com.nepalaya.studentmgmt.builder.ResponseBuilder;
 import com.nepalaya.studentmgmt.dao.StudentDAO;
-import com.nepalaya.studentmgmt.dao.impl.StudentDAOImpl;
 import com.nepalaya.studentmgmt.exception.ResponseProcessor;
 import com.nepalaya.studentmgmt.model.Student;
 import com.nepalaya.studentmgmt.response.Response;
 import com.nepalaya.studentmgmt.service.StudentService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentDAO studentDAO = new StudentDAOImpl();
+    private final StudentDAO studentDAO;
 
-    public StudentServiceImpl(){
-        System.out.println("StudentServiceImpl: "+this);
+    public StudentServiceImpl(@Qualifier("springJdbcTemplate") StudentDAO studentDAO) {
+        this.studentDAO = studentDAO;
     }
 
     @Override

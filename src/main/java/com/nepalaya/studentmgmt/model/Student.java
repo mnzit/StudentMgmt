@@ -33,8 +33,8 @@ public class Student implements Serializable {
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    @NotNull
-    @Past
+//    @NotNull
+//    @Past
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "DOB", nullable = false)
     private Date dob;

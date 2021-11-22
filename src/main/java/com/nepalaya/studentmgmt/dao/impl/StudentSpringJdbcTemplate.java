@@ -1,20 +1,27 @@
 package com.nepalaya.studentmgmt.dao.impl;
 
+
 import com.nepalaya.studentmgmt.dao.StudentDAO;
-import com.nepalaya.studentmgmt.db.JdbcTemplate;
 import com.nepalaya.studentmgmt.db.QueryConstant;
-import com.nepalaya.studentmgmt.mapper.StudentCustomMapper;
+import com.nepalaya.studentmgmt.mapper.StudentSpringMapper;
 import com.nepalaya.studentmgmt.model.Student;
 import com.nepalaya.studentmgmt.util.DateUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
-public class StudentDAOJdbcTemplateImpl implements StudentDAO {
+@Repository
+@Qualifier("springJdbcTemplate")
+public class StudentSpringJdbcTemplate implements StudentDAO {
 
-    private final JdbcTemplate<Student> jdbcTemplate = new JdbcTemplate<>();
+    private JdbcTemplate jdbcTemplate;
 
-    // CREATE
+    public StudentSpringJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @Override
     public void save(Student student) throws Exception {
         int rowAffected = jdbcTemplate.update(
@@ -32,7 +39,6 @@ public class StudentDAOJdbcTemplateImpl implements StudentDAO {
         }
     }
 
-    // UPDATE
     @Override
     public void update(Student student) throws Exception {
         int rowAffected = jdbcTemplate.update(
@@ -50,7 +56,31 @@ public class StudentDAOJdbcTemplateImpl implements StudentDAO {
         }
     }
 
-    // DELETE
+    @Override
+    public List<Student> getAll() throws Exception {
+        List<Student> students = jdbcTemplate.query(QueryConstant.Student.GET_ALL, new StudentSpringMapper());
+        if (students == null || students.isEmpty()) {
+            throw new RuntimeException("Students not found");
+        } else {
+            return students;
+        }
+    }
+
+    @Override
+    public Student getOneById(Long id) throws Exception {
+        Student student = jdbcTemplate
+                .queryForObject(
+                        QueryConstant.Student.GET_BY_ID,
+                        new StudentSpringMapper(),
+                        new Object[]{id}
+                );
+        if (student != null) {
+            return student;
+        } else {
+            throw new RuntimeException("Student with id=[" + id + "] is not found in our system");
+        }
+    }
+
     @Override
     public void delete(Long id) throws Exception {
         int rowAffected = jdbcTemplate.update(QueryConstant.Student.DELETE, new Object[]{id});
@@ -61,30 +91,4 @@ public class StudentDAOJdbcTemplateImpl implements StudentDAO {
         }
     }
 
-    // READ
-    @Override
-    public List<Student> getAll() throws Exception {
-        List<Student> students = jdbcTemplate.getAll(QueryConstant.Student.GET_ALL, new StudentCustomMapper());
-        if (students == null || students.isEmpty()) {
-            throw new RuntimeException("Students not found");
-        } else {
-            return students;
-        }
-    }
-
-    // READ
-    @Override
-    public Student getOneById(Long id) throws Exception {
-        Optional<Student> optionalStudent = jdbcTemplate
-                .getOneByObject(
-                        QueryConstant.Student.GET_BY_ID,
-                        new Object[]{id},
-                        new StudentCustomMapper()
-                );
-        if (optionalStudent.isPresent()) {
-            return optionalStudent.get();
-        } else {
-            throw new RuntimeException("Student with id=[" + id + "] is not found in our system");
-        }
-    }
 }
