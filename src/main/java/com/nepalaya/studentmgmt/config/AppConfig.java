@@ -32,14 +32,14 @@ public class AppConfig {
     @Value("${spring.jdbc.password}")
     private String password;
 
-    @Bean
-    public UrlBasedViewResolver viewResolver(){
-        UrlBasedViewResolver viewResolver = new UrlBasedViewResolver();
-        viewResolver.setPrefix(viewPrefix);
-        viewResolver.setSuffix(viewSuffix);
-        viewResolver.setViewClass(JstlView.class);
-        return viewResolver;
-    }
+//    @Bean
+//    public UrlBasedViewResolver viewResolver(){
+//        UrlBasedViewResolver viewResolver = new UrlBasedViewResolver();
+//        viewResolver.setPrefix(viewPrefix);
+//        viewResolver.setSuffix(viewSuffix);
+//        viewResolver.setViewClass(JstlView.class);
+//        return viewResolver;
+//    }
 
     @Bean
     public DataSource dataSource(){
