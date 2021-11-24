@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>Students</title>
+</head>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+<body>
+<h1>Students</h1>
+<button>
+    <a href="students/create">Create Student</a>
+</button>
+<!--<h2 th:text>${message}</h2>-->
+
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>ContactNo</th>
+            <th>Address</th>
+            <th>DOB</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="student: ${students}">
+                <td th:text="${student.id}" />
+                <td th:text="${student.name}" />
+                <td th:text="${student.contactNo}" />
+                <td th:text="${student.address}" />
+                <td th:text="${student.dob}" />
+                <td th:text="${student.status}" />
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
