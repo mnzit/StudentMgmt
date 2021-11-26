@@ -1,6 +1,8 @@
 # StudentMgmt
 This projects contains all the reasons necessary to evolve from different conditions
 
+> Before starting this please refer to [Link](https://github.com/mnzit/Jdbc/tree/master)
+
 ## Phases
 
 1. Exposed a simple rest api with using servlets, using custom jdbc template
