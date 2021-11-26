@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>StudentMgmt</title>
+</head>
+<body>
+    <form method="post" th:object="${student}">
+        <div>
+            <label>Name</label>
+            <input th:field="*{name}" id="name" type="text" name="name" required="required"></input>
+        </div>
+        <div>
+            <label>ContactNo</label>
+            <input th:field="*{contactNo}" id="contactNo" type="text" name="contactNo" required="required"></input>
+        </div>
+        <div>
+            <label>Address</label>
+            <input th:field="*{address}" id="address" type="text" name="address" required="required"></input>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

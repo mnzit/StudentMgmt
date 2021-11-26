@@ -1,7 +1,6 @@
 package com.nepalaya.studentmgmt.config;
 
 import nz.net.ultraq.web.thymeleaf.LayoutDialect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +20,12 @@ public class ThymeLeafConfig {
     private String viewPrefix;
     @Value("${spring.ui.thyme.suffix}")
     private String viewSuffix;
+    @Value("${spring.ui.thyme.encoding}")
+    private String viewEncoding;
+    @Value("${spring.ui.thyme.templateMode}")
+    private String viewTemplateMode;
+    @Value("${spring.ui.thyme.cacheable}")
+    private Boolean viewCacheable;
 
     @Bean
     public Set<IDialect> thymeleafDialects() {
@@ -31,7 +36,6 @@ public class ThymeLeafConfig {
     }
 
     @Bean
-    @Autowired
     public SpringTemplateEngine templateEngine(
             ServletContextTemplateResolver templateResolver) {
         SpringTemplateEngine engine = new SpringTemplateEngine();
@@ -41,12 +45,11 @@ public class ThymeLeafConfig {
     }
 
     @Bean
-    @Autowired
     public ThymeleafViewResolver thymeleafViewResolver(
             SpringTemplateEngine templateEngine) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine);
-        resolver.setCharacterEncoding("UTF-8");
+        resolver.setCharacterEncoding(viewEncoding);
         return resolver;
     }
 
@@ -55,8 +58,8 @@ public class ThymeLeafConfig {
         ServletContextTemplateResolver resolver = new ServletContextTemplateResolver();
         resolver.setPrefix(viewPrefix);
         resolver.setSuffix(viewSuffix);
-        resolver.setTemplateMode("HTML5");
-        resolver.setCacheable(false);
+        resolver.setTemplateMode(viewTemplateMode);
+        resolver.setCacheable(viewCacheable);
         return resolver;
     }
 }

@@ -20,7 +20,7 @@ import java.util.Date;
 @Builder
 @Getter
 @Setter
-@ToString
+//@ToString
 public class Student implements Serializable {
 
     @Id
@@ -28,17 +28,20 @@ public class Student implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Basic(optional = true)
     @NotBlank
     @Size(min = 2, max = 150)
     @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Basic(optional = true)
 //    @NotNull
 //    @Past
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "DOB", nullable = false)
     private Date dob;
 
+    @Basic(optional = true)
     @NotBlank
     @Column(name = "ADDRESS", nullable = false)
     @Size(min = 2, max = 200)
